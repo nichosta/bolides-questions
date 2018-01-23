@@ -1,0 +1,24 @@
+{
+  "topfive": {
+    "1":{
+        "player":"Nick",
+        "score":1000
+    },
+    "2":{
+        "player":"Erik",
+        "score":900
+    },
+    "3":{
+        "player":"Nick",
+        "score":800
+    },
+    "4":{
+        "player":"Erik",
+        "score":700
+    },
+    "5":{
+        "player":"Nick",
+        "score":600
+    }
+  }
+}

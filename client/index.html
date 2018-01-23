@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bolides Questions</title>
+    <meta name="author" content="Nicholas Costa">
+    <meta name="description" content="An educational clone of the classic game Asteroids">
+    <link rel="icon" href="favicon.ico">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="bg"></div>
+    <div class="bg"></div>
+    <section id="menu">
+        <nav>
+            <h1>Bolides</h1>
+            <button id="playButton">Play</button>
+            <button id="addButton">Add Questions</button>
+            <button id="removeButton">Remove Questions</button>
+            <button id="instructionsButton">Instructions</button>
+            <button id="scoreboardButton">Scoreboard</button>
+        </nav>
+        <div id="instructions">
+            <p>Instructions</p>
+            <p>Press space to fire, WASD or arrow keys to move. Asteroids are worth 100 pts, Bolides are worth 500 pts.</p>
+            <p>Gain points equal to the current level times 100 to advance to the next level and increase the difficulty.</p>
+            <p>If you touch an asteroid, you will lose a life unless you can correctly answer a question. Lose all your lives, and the game ends.</p>
+            <p>At the end of the game, your score will be recorded, and you can check the high scorers on the Scoreboard screen.</p>
+            <p><< Click to close >></p>
+        </div>
+        <div id="nameInput">
+          <label for="playerName">Player Name: </label>
+          <input id="playerName" type="text" size="20" placeholder="max 20 chars">
+          <button id="playerSubmit" class="smallButton">Submit</button>
+        </div>
+        <div id="addQuestion">
+            <h2 id="addTitle">Add a Question</h2>
+            <label for="questionText">Text of the question: </label>
+            <input id="questionText" type="text" size="75">
+            <br>
+            <label for="answerA">Answer A: </label>
+            <input id="answerA" type="text" size="10">
+            <input id="correctA" type="radio" name="correct" value="A">
+            <label for="answerB">Answer B: </label>
+            <input id="answerB" type="text" size="10">
+            <input id="correctB" type="radio" name="correct" value="B">
+            <label for="answerC">Answer C: </label>
+            <input id="answerC" type="text" size="10">
+            <input id="correctC" type="radio" name="correct" value="C">
+            <label for="answerD">Answer D: </label>
+            <input id="answerD" type="text" size="10">
+            <input id="correctD" type="radio" name="correct" value="D">
+        <div class="bolide"></div>
+    </section>
+    <canvas id="canvas">Upgrade to Chrome or Firefox to use the Canvas API.</canvas>
+    <script src="Bullet.js"></script>
+    <script src="Asteroid.js"></script>
+    <script src="bolides.js"></script>
+
+</body>
+
+</html>

@@ -5,10 +5,11 @@ createObjects = function() {
     bolides.asteroidList = [new Asteroid()];
 }
 
-initiate = function() {
+initiate = function() { // Get ready, long function coming up
     // Declare the canvas's context as 2D
     canvas.element = document.getElementById('canvas');
     canvas.ctx = canvas.element.getContext('2d');
+    // Show the canvas and hide the menu
     canvas.element.style.display = 'block';
     menu.container.style.display = 'none';
 
@@ -25,19 +26,19 @@ initiate = function() {
             // First case in each statement is for WASD key, second is arrow key
             case 87:
             case 38:
-                bolides.keyPresses.up = true;
+                keyPresses.up = true;
                 break;
             case 65:
             case 37:
-                bolides.keyPresses.left = true;
+                keyPresses.left = true;
                 break;
             case 83:
             case 40:
-                bolides.keyPresses.down = true;
+                keyPresses.down = true;
                 break;
             case 68:
             case 39:
-                bolides.keyPresses.right = true;
+                keyPresses.right = true;
                 break;
                 // Space has a special listener because otherwise short presses have no effect
                 // Checks for fireability from each bullet
@@ -63,19 +64,19 @@ initiate = function() {
             // First case in each statement is for WASD key, second is arrow key
             case 87:
             case 38:
-                bolides.keyPresses.up = false;
+                keyPresses.up = false;
                 break;
             case 65:
             case 37:
-                bolides.keyPresses.left = false;
+                keyPresses.left = false;
                 break;
             case 83:
             case 40:
-                bolides.keyPresses.down = false;
+                keyPresses.down = false;
                 break;
             case 68:
             case 39:
-                bolides.keyPresses.right = false;
+                keyPresses.right = false;
                 break;
         }
         // No special keyup listeners necessary.
@@ -83,18 +84,18 @@ initiate = function() {
     // Set the spaceship slowdown interval (0.5 speed every half second)
     // Again, this is staying the way it is, even though it's ugly.
     bolides.intervals.slowdownInterval = setInterval(function() {
-        if (bolides.spaceship.velocity.x > 0.5 && !bolides.keyPresses.up) {
+        if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.x -= 0.5;
-        } else if (bolides.spaceship.velocity.x <= -0.5 && !bolides.keyPresses.up) {
+        } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.x += 0.5;
-        } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !bolides.keyPresses.up) {
+        } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.x = 0;
         }
-        if (bolides.spaceship.velocity.y > 0.5 && !bolides.keyPresses.up) {
+        if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.y -= 0.5;
-        } else if (bolides.spaceship.velocity.y <= -0.5 && !bolides.keyPresses.up) {
+        } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.y += 0.5;
-        } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !bolides.keyPresses.up) {
+        } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
             bolides.spaceship.velocity.y = 0;
         }
     }, 500);

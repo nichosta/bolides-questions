@@ -11,7 +11,7 @@ menuStart = function() {
 };
 
 menuListeners = function() {
-    document.getElementById('playButton').addEventListener('mousedown', () => {
+    document.getElementById('playButton').addEventListener('click', () => {
         initiate();
         menu.nav.style.display = 'none';
         menu.username.style.display = 'block';

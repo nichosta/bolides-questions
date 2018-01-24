@@ -117,6 +117,10 @@ button:hover {
     border-right-width: 5px;
 }
 
+button:focus {
+    outline: none;
+}
+
 .menubutton {
     margin: 5px;
     padding: 10px 0;

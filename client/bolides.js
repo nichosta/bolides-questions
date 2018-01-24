@@ -4,7 +4,6 @@
 
 const connection = new WebSocket('ws://localhost:8675');
 
-
 const canvas = {
     element: document.getElementById('canvas'),
     ctx: '',
@@ -17,6 +16,14 @@ const canvas = {
         canvas.ctx.restore();
     }
 };
+// KeyPress object for storing keypresses
+var keyPresses = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+};
+
 // Game object
 var bolides = {
     // Self explanatory
@@ -31,13 +38,6 @@ var bolides = {
         controlInterval: 0,
         // Whatever you do, don't blink. Blink and you're dead.
         blinkInterval: 0
-    },
-    // KeyPress object for storing keypresses
-    keyPresses: {
-        up: false,
-        down: false,
-        left: false,
-        right: false,
     },
     // Attributes of the player's ship declared
     spaceship: {
@@ -155,7 +155,7 @@ var bolides = {
         // Up key or W key?
         // Does several formulas to make sure you can speed up (there's a max speed)
         // This is real ugly
-        if (bolides.keyPresses.up) {
+        if (keyPresses.up) {
             if (bolides.spaceship.velocity.x > 10) {
                 if (Math.sin(bolides.spaceship.angle) < 0) {
                     bolides.spaceship.velocity.x += Math.sin(bolides.spaceship.angle);
@@ -183,15 +183,14 @@ var bolides = {
         }
         // Down key does nothing, atm (may change), but still has a handler
         // Left key or A key?
-        if (bolides.keyPresses.left) {
+        if (keyPresses.left) {
             // Then change its angle by 20 degrees over 1/10 second
-            // This animation (and the right one, below) is added to smoothen turning
+            // This animation (and the other one, below) is added to smoothen turning
             var leftInterval = setInterval(() => bolides.spaceship.angle -= (Math.PI / 180) * 6, 20);
             setTimeout(() => clearInterval(leftInterval), 100);
         }
         // Right key or D key?
-        if (bolides.keyPresses.right) {
-            // Then change its angle by -20 degrees over 1/10 second
+        if (keyPresses.right) {
             var rightInterval = setInterval(() => bolides.spaceship.angle += (Math.PI / 180) * 6, 20);
             setTimeout(() => clearInterval(rightInterval), 100);
         }
@@ -244,21 +243,13 @@ var bolides = {
                 bullet.y += bullet.direction.y * bullet.speed;
             }
             // Bullet cooldown times
-            if (bullet.x <= -25 && !bullet.isCooling) {
-                bullet.isCooling = true;
-                setTimeout(() => {
-                    bullet.isBeingFired = false;
-                }, 1000);
-            } else if (bullet.x >= window.innerWidth && !bullet.isCooling) {
+            if ((bullet.x <= -25 || bullet.x >= window.innerWidth) && !bullet.isCooling) {
                 bullet.isCooling = true;
                 setTimeout(() => {
                     bullet.isBeingFired = false;
                 }, 1000);
             }
-            if (bullet.y >= window.innerHeight + 30 && !bullet.isCooling) {
-                bullet.isCooling = true;
-                setTimeout(() => bullet.isBeingFired = false, 1000);
-            } else if (bullet.y <= 0 && !bullet.isCooling) {
+            if ((bullet.y >= window.innerHeight || bullet.y <= 0) + 30 && !bullet.isCooling) {
                 bullet.isCooling = true;
                 setTimeout(() => bullet.isBeingFired = false, 1000);
             }
@@ -270,34 +261,28 @@ var bolides = {
         // Anyway, a good chunk of this math is exactly the same as what the spaceship has.
         bolides.asteroidList.forEach((asteroid) => {
             // Choose where the asteroid comes from, its angle, and whether or not it's a bolide.
-            if (Math.random() < 0.5 && !asteroid.isInMotion) {
-                asteroid.isBolide = Math.random() < 0.05;
-                asteroid.x = (Math.random() * (window.innerWidth + 100) + 50);
-                asteroid.y = -50;
-                asteroid.angle = Math.random() * 2.9670597283903604 + 1.6580627893946132;
-                asteroid.isInMotion = true;
-            } else if (!asteroid.isInMotion) {
-                asteroid.isBolide = Math.random() < 0.05; // 5% chance
-                asteroid.x = window.innerWidth + 50;
-                asteroid.y = Math.random() * (window.innerHeight - 50) + 50;
-                asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095;
+            if (!asteroid.isInMotion) {
+                asteroid.isBolide = Math.random() < 0.05; // 5% or 1/20 chance
+                if (Math.random() < 0.5) {
+                    asteroid.x = (Math.random() * (window.innerWidth + 100) + 50);
+                    asteroid.y = -50;
+                    asteroid.angle = Math.random() * 2.9670597283903604 + 1.6580627893946132; // Radians or something
+                } else {
+                    asteroid.x = window.innerWidth + 50;
+                    asteroid.y = Math.random() * (window.innerHeight - 50) + 50;
+                    asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095; // See above
+                }
                 asteroid.isInMotion = true;
             }
+
+            asteroid.height = asteroid.isBolide ? 154 : 62;
             asteroid.direction.x = Math.sin(asteroid.angle);
             asteroid.direction.y = -Math.cos(asteroid.angle);
             asteroid.x += asteroid.direction.x * asteroid.speed;
             asteroid.y += asteroid.direction.y * asteroid.speed;
             // Asteroid stopping
-            if (asteroid.x <= -60) {
+            if (asteroid.x <= -60 || asteroid.x >= window.innerWidth + 60 || asteroid.y >= window.innerHeight + 60 || asteroid.y <= -50)
                 asteroid.isInMotion = false;
-            } else if (asteroid.x >= window.innerWidth + 60) {
-                asteroid.isInMotion = false;
-            }
-            if (asteroid.y >= window.innerHeight + 60) {
-                asteroid.isInMotion = false;
-            } else if (asteroid.y <= -50) {
-                asteroid.isInMotion = false;
-            }
         });
         // Collision detection (spaceship x asteroid)
         bolides.asteroidList.forEach((asteroid) => {
@@ -308,7 +293,7 @@ var bolides = {
                 bolides.spaceship.isVulnerable = false;
                 setTimeout(function() {
                     bolides.spaceship.isVulnerable = true;
-                }, 2000);
+                }, 3000);
             }
         });
         // Collision detection (bullets x asteroid)
@@ -335,18 +320,18 @@ var bolides = {
         // Draw score
         canvas.ctx.fillText('Score: ' + bolides.score, window.innerWidth - 250, window.innerHeight - 20);
         // Check for the number of hearts and draw that many
-        for (var i = 1; i <= bolides.spaceship.hearts; i++) {
-            canvas.ctx.drawImage(bolides.images.heart, (i - 1) * 30 + 5, 15);
-        }
+        for (var i = 1; i <= bolides.spaceship.hearts; i++)
+            canvas.drawAngled({ x: (i - 1) * 30 + 5, y: 15, width: 38, height: 34, angle: 0 }, bolides.images.heart);
+        // Draw out every asteroid, choosing whether to use the bolide image
         bolides.asteroidList.forEach((asteroid) => {
             canvas.drawAngled(asteroid, asteroid.isBolide ? bolides.images.bolide : bolides.images.asteroid);
         });
+        // Draw the bullets
         bolides.bulletList.forEach((bullet) => {
             canvas.drawAngled(bullet, bolides.images.bullet);
         });
         // Spaceship last so it gets drawn over other things
-        if (!bolides.spaceship.isBlinking) {
+        if (!bolides.spaceship.isBlinking)
             canvas.drawAngled(bolides.spaceship, bolides.images.ship);
-        }
     }
 }

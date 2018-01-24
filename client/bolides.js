@@ -1,14 +1,27 @@
 /* jshint esversion: 6, loopfunc: true, unused: false, strict: true, debug: true, globalstrict: true, moz: true, browser: true, devel: true, undef: true */
 /* globals Asteroid, Bullet*/
 'use strict';
+
+const connection = new WebSocket('ws://localhost:8675');
+
+
+const canvas = {
+    element: document.getElementById('canvas'),
+    ctx: '',
+    drawAngled: function(obj, img) {
+        console.log(`${obj.x}`);
+        canvas.ctx.save();
+        canvas.ctx.translate(obj.x + obj.width / 2, obj.y + obj.height / 2);
+        canvas.ctx.rotate(obj.angle);
+        canvas.ctx.drawImage(img, -obj.width / 2, -obj.height / 2, obj.width, obj.height);
+        canvas.ctx.restore();
+    }
+};
+// Game object
 var bolides = {
     // Self explanatory
     level: 1,
     score: 0,
-    // The actual canvas element
-    canvas: 0,
-    // The canvas context (2d in this situation)
-    ctx: '',
     // Pause variable
     paused: false,
 
@@ -18,14 +31,6 @@ var bolides = {
         controlInterval: 0,
         // Whatever you do, don't blink. Blink and you're dead.
         blinkInterval: 0
-    },
-    // All the stuff related to the main menu (mostly self explanatory)
-    menu: {
-        container: document.getElementById('menu'),
-        nav: document.getElementsByTagName('nav')[0],
-        instructions: document.getElementById('instructions'),
-        username: document.getElementById('username'),
-        add: document.getElementById('addQuestion'),
     },
     // KeyPress object for storing keypresses
     keyPresses: {
@@ -46,6 +51,9 @@ var bolides = {
             x: 0,
             y: 0
         },
+        // Constant width and height
+        width: 32,
+        height: 74,
         // Starting health
         hearts: 3,
         // Invincibilty and blink variables
@@ -79,7 +87,7 @@ var bolides = {
         // Set the game over menu style
         bolides.ctx.font = '48px Arcade';
         bolides.ctx.fillStyle = 'white';
-        // Draw the game over menu
+        // Draw the game over s
         bolides.ctx.fillText('Game Over', window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 - 50);
         // All this code was done on an 11-inch Macbook, so it probably looks awful on other computers.
         // Oh well.
@@ -133,8 +141,8 @@ var bolides = {
         } else {
             // No? Then move and draw everything, then loop again.
             // PS: also resize the canvas, just in case
-            bolides.canvas.width = window.innerWidth - 4;
-            bolides.canvas.height = window.innerHeight - 4;
+            canvas.element.width = window.innerWidth - 4;
+            canvas.element.height = window.innerHeight - 4;
             bolides.move();
             bolides.draw();
             // Get the next frame
@@ -318,52 +326,27 @@ var bolides = {
     // The whole drawing function
     draw: function() {
         // Clear the canvas
-        bolides.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        canvas.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         // HUD Style
-        bolides.ctx.fillStyle = 'white';
-        bolides.ctx.font = '24px Arcade';
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.font = '24px Arcade';
         // Draw level word
-        bolides.ctx.fillText('Level: ' + bolides.level, 10, window.innerHeight - 20);
+        canvas.ctx.fillText('Level: ' + bolides.level, 10, window.innerHeight - 20);
         // Draw score
-        bolides.ctx.fillText('Score: ' + bolides.score, window.innerWidth - 250, window.innerHeight - 20);
+        canvas.ctx.fillText('Score: ' + bolides.score, window.innerWidth - 250, window.innerHeight - 20);
         // Check for the number of hearts and draw that many
         for (var i = 1; i <= bolides.spaceship.hearts; i++) {
-            bolides.ctx.drawImage(bolides.images.heart, (i - 1) * 30 + 5, 15);
+            canvas.ctx.drawImage(bolides.images.heart, (i - 1) * 30 + 5, 15);
         }
         bolides.asteroidList.forEach((asteroid) => {
-            // If the asteroid is a bolide
-            if (asteroid.isBolide) {
-                // Make sure it's facing the right way
-                bolides.ctx.save();
-                bolides.ctx.translate(asteroid.x + 31, asteroid.y + 31);
-                bolides.ctx.rotate(asteroid.angle);
-                bolides.ctx.drawImage(bolides.images.bolide, -31, -31, 62, 154);
-                bolides.ctx.restore();
-            } else {
-                // Otherwise you can just draw it normally, no one will notice
-                bolides.ctx.drawImage(bolides.images.asteroid, asteroid.x, asteroid.y, 62, 62);
-            }
+            canvas.drawAngled(asteroid, asteroid.isBolide ? bolides.images.bolide : bolides.images.asteroid);
         });
         bolides.bulletList.forEach((bullet) => {
-            bolides.ctx.save();
-            bolides.ctx.translate(bullet.x + 3, bullet.y - 12.5);
-            bolides.ctx.rotate(bullet.angle);
-            bolides.ctx.drawImage(bolides.images.bullet, -3, -12.5);
-            // Restore again
-            bolides.ctx.restore();
+            canvas.drawAngled(bullet, bolides.images.bullet);
         });
         // Spaceship last so it gets drawn over other things
         if (!bolides.spaceship.isBlinking) {
-            // Save its state
-            bolides.ctx.save();
-            // Set the origin to the ship's center
-            bolides.ctx.translate(bolides.spaceship.x + 18, bolides.spaceship.y + 31);
-            // Rotate the ship around the center by the angle of the ship
-            bolides.ctx.rotate(bolides.spaceship.angle);
-            // Draw the ship
-            bolides.ctx.drawImage(bolides.images.ship, -18, -31, 36, 74);
-            // Restore to normal
-            bolides.ctx.restore();
+            canvas.drawAngled(bolides.spaceship, bolides.images.ship);
         }
     }
 }

@@ -1,23 +1,23 @@
-bolides.createObjects = function() {
+createObjects = function() {
     // Making all the bullets used in the program
     bolides.bulletList = [new Bullet(bolides.spaceship), new Bullet(bolides.spaceship), new Bullet(bolides.spaceship)];
     // New asteroids are dynamically generated as the game progresses; that's why there's only one to begin with
     bolides.asteroidList = [new Asteroid()];
 }
 
-bolides.initiate = function() {
+initiate = function() {
     // Declare the canvas's context as 2D
-    bolides.canvas = document.getElementById('canvas');
-    bolides.ctx = bolides.canvas.getContext('2d');
-    bolides.canvas.style.display = 'block';
-    bolides.menu.container.style.display = 'none';
+    canvas.element = document.getElementById('canvas');
+    canvas.ctx = canvas.element.getContext('2d');
+    canvas.element.style.display = 'block';
+    menu.container.style.display = 'none';
 
     // Set the canvas's size
-    bolides.canvas.width = window.innerWidth - 4;
-    bolides.canvas.height = window.innerHeight - 4;
+    canvas.element.width = window.innerWidth - 4;
+    canvas.element.height = window.innerHeight - 4;
 
     // Create assets
-    bolides.createObjects();
+    createObjects();
 
     // Keydown listeners
     addEventListener('keydown', function(e) {
@@ -126,4 +126,3 @@ bolides.initiate = function() {
     // Start looping
     bolides.loop();
 }
-bolides.menuStart();

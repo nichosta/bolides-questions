@@ -17,6 +17,8 @@ Bullet.prototype = {
             x: 0,
             y: 0
         };
+        this.width = 6;
+        this.height = 23;
         // Is what it says on the tin
         this.isBeingFired = false;
         // Cooldown

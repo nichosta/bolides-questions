@@ -24,12 +24,12 @@
             <button class="menubutton" id="scoreboardButton">Scoreboard</button>
         </nav>
         <div id="instructions">
-            <p>Instructions</p>
+            <h3>Instructions</h3>
             <p>Press space to fire, WASD or arrow keys to move. Asteroids are worth 100 pts, Bolides are worth 500 pts.</p>
             <p>Gain points equal to the current level times 100 to advance to the next level and increase the difficulty.</p>
             <p>If you touch an asteroid, you will lose a life unless you can correctly answer a question. Lose all your lives, and the game ends.</p>
             <p>At the end of the game, your score will be recorded, and you can check the high scorers on the Scoreboard screen.</p>
-            <button class="backbutton" id="instruBack">Back to Main Menu</button>
+            <button class="backButton" id="instruBack">Back to Main Menu</button>
         </div>
         <div id="username">
             <label for="playerName">Player Name: </label>
@@ -37,22 +37,33 @@
             <button id="playerSubmit" class="smallButton">Submit</button>
         </div>
         <div id="addQuestion">
-            <h2 id="addTitle">Add a Question</h2>
+            <h3 id="addTitle">Add a Question</h3>
             <label for="questionText">Text of the question: </label>
-            <input id="questionText" type="text" size="75">
+            <input id="questionText" type="text" size="60">
             <br>
             <label for="answerA">Answer A: </label>
-            <input id="answerA" type="text" size="10">
+            <input id="answerA" type="text" size="20">
+            <label for="correctA" class="radioLabel"></label>
             <input id="correctA" type="radio" name="correct" value="A">
+            <br>
             <label for="answerB">Answer B: </label>
-            <input id="answerB" type="text" size="10">
+            <input id="answerB" type="text" size="20">
+            <label for="correctB" class="radioLabel"></label>
             <input id="correctB" type="radio" name="correct" value="B">
+            <br>
             <label for="answerC">Answer C: </label>
-            <input id="answerC" type="text" size="10">
+            <input id="answerC" type="text" size="20">
+            <label for="correctC" class="radioLabel"></label>
             <input id="correctC" type="radio" name="correct" value="C">
+            <br>
             <label for="answerD">Answer D: </label>
-            <input id="answerD" type="text" size="10">
+            <input id="answerD" type="text" size="20">
+            <label for="correctD" class="radioLabel"></label>
             <input id="correctD" type="radio" name="correct" value="D">
+            <br>
+            <input id="submitnew" type="submit" value="Submit">
+            <br>
+            <button class="backButton" id="addBack">Back to Main Menu</button>
         </div>
         <div id="bolide"></div>
     </section>

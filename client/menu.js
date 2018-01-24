@@ -17,13 +17,21 @@ menuListeners = function() {
         menu.username.style.display = 'block';
         document.getElementById('bolide').style.display = 'none';
     });
+    document.getElementById('instructionsButton').addEventListener('click', () => {
+        menu.nav.style.display = 'none';
+        menu.instructions.style.display = 'flex';
+    });
+    document.getElementById('instruBack').addEventListener('click', () => {
+        menu.nav.style.display = 'flex';
+        menu.instructions.style.display = 'none';
+    });
+    document.getElementById('addButton').addEventListener('click', () => {
+        menu.nav.style.display = 'none';
+        menu.add.style.display = 'inline-block';
+    });
+    document.getElementById('addBack').addEventListener('click', () => {
+        menu.add.style.display = 'none';
+        menu.nav.style.display = 'flex';
+    })
 }
-document.getElementById('instructionsButton').onclick = function() {
-    menu.nav.style.display = 'none';
-    menu.instructions.style.display = 'block';
-}
-document.getElementById('instruBack').onclick = function() {
-    menu.nav.style.display = 'flex';
-    menu.instructions.style.display = 'none';
-};
 addEventListener('load', menuStart);

@@ -10,6 +10,10 @@
     font: inherit;
 }
 
+p {
+    margin-bottom: 10px;
+}
+
 body {
     width: 100vw;
     height: 100vh;
@@ -130,12 +134,14 @@ button:focus {
     display: block;
 }
 
-.backbutton {
-    margin-top: 10px;
-    padding: 5px 0;
-    font-size: 1rem;
-    width: 350px;
-    height: 40px;
+.backButton {
+    margin-top: 30px;
+    padding: 3px 0;
+    font-size: 2rem;
+    width: 600px;
+    height: 58px;
+    align-self: center;
+    display: inline-block;
 }
 
 #bolide {
@@ -166,13 +172,31 @@ button:focus {
     }
 }
 
-#instructions,
+#instructions {
+    display: none;
+    justify-content: center;
+    flex-flow: wrap;
+    align-content: flex-end;
+    font-size: 1em;
+    background: rgba(0, 0, 0, .4);
+    padding: 50px 100px;
+}
+
+h3 {
+    display: static;
+    top: 1em;
+    font-size: 2.5em;
+    align-self: center;
+    margin-bottom: 1em;
+}
+
 #addQuestion {
     display: none;
+    justify-content: center;
+    align-content: center;
     font-size: 1.5em;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 50px 100px;
-    cursor: pointer;
+    background: rgba(0, 0, 0, .6);
+    padding: 200px 0;
 }
 
 #username {
@@ -180,23 +204,30 @@ button:focus {
     display: none;
 }
 
-form {
-    padding: 50px;
-    width: 100%;
+label[for='questionText'] {
+    margin-left: 50px;
+    margin-bottom: 10px;
+}
+
+.radioLabel {
+    float: right;
 }
 
 input {
-    display: inline-block;
+    border: 0;
     color: white;
-    transition: 0.2s all;
 }
 
 input[type='text'] {
-    display: static;
-    background: transparent;
-    border: 1px solid transparent;
-    font-size: 1em;
-    width: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid lightgrey;
+    font-size: 0.75em;
+}
+
+#questionText {
+    align-self: center;
+    margin-bottom: 50px;
+    float: none;
 }
 
 input:focus {
@@ -205,19 +236,21 @@ input:focus {
 }
 
 input[type='submit'] {
-    display: static;
     color: white;
-    background-color: rgba(30, 30, 30, 0.8);
-    border: 1px solid darkgrey;
-    border-radius: 5px;
+    background-color: #333333;
+    cursor: pointer;
+    float: bottom;
+    margin-top: 50px;
+    border-left: solid 0 #e46b08;
+    border-right: solid 0 transparent;
 }
 
 input[type='submit']:hover {
-    background-color: rgba(60, 60, 60, 1);
+    border-left-width: 5px;
+    border-right-width: 5px;
 }
 
 input[type='radio'] {
-    display: block;
-    background-color: gray;
-    border: 2px #333 solid;
+    background-color: #333333;
+    border: none;
 }

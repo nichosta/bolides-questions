@@ -221,7 +221,7 @@ var bolides = {
             bolides.spaceship.y = window.innerHeight;
         }
         // If accelerating
-        if (bolides.keyPresses.up && bolides.spaceship.isVulnerable) {
+        if (keyPresses.up && bolides.spaceship.isVulnerable) {
             // Use the moving ship pic.
             bolides.images.ship.src = 'images/spaceship-move.png';
         } else {

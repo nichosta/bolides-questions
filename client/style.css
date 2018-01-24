@@ -134,7 +134,7 @@ button:hover {
     height: 40px;
 }
 
-.bolide {
+#bolide {
     background: url(images/bolide.png);
     background-size: cover;
     image-rendering: optimizeSpeed;
@@ -163,10 +163,7 @@ button:hover {
 }
 
 #instructions,
-#addQuestion
-/* TODO: other tabs style here */
-
-{
+#addQuestion {
     display: none;
     font-size: 1.5em;
     background: rgba(0, 0, 0, 0.4);

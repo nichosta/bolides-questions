@@ -126,3 +126,4 @@ bolides.initiate = function() {
     // Start looping
     bolides.loop();
 }
+bolides.menuStart();

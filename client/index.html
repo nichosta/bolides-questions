@@ -17,11 +17,11 @@
     <section id="menu">
         <nav>
             <h1>Bolides</h1>
-            <button id="playButton">Play</button>
-            <button id="addButton">Add Questions</button>
-            <button id="removeButton">Remove Questions</button>
-            <button id="instructionsButton">Instructions</button>
-            <button id="scoreboardButton">Scoreboard</button>
+            <button class="menubutton" id="playButton">Play</button>
+            <button class="menubutton" id="addButton">Add Questions</button>
+            <button class="menubutton" id="removeButton">Remove Questions</button>
+            <button class="menubutton" id="instructionsButton">Instructions</button>
+            <button class="menubutton" id="scoreboardButton">Scoreboard</button>
         </nav>
         <div id="instructions">
             <p>Instructions</p>
@@ -29,12 +29,12 @@
             <p>Gain points equal to the current level times 100 to advance to the next level and increase the difficulty.</p>
             <p>If you touch an asteroid, you will lose a life unless you can correctly answer a question. Lose all your lives, and the game ends.</p>
             <p>At the end of the game, your score will be recorded, and you can check the high scorers on the Scoreboard screen.</p>
-            <p><< Click to close >></p>
+            <button class="backbutton" id="instruBack">Back to Main Menu</button>
         </div>
-        <div id="nameInput">
-          <label for="playerName">Player Name: </label>
-          <input id="playerName" type="text" size="20" placeholder="max 20 chars">
-          <button id="playerSubmit" class="smallButton">Submit</button>
+        <div id="username">
+            <label for="playerName">Player Name: </label>
+            <input id="playerName" type="text" size="20" placeholder="max 20 chars">
+            <button id="playerSubmit" class="smallButton">Submit</button>
         </div>
         <div id="addQuestion">
             <h2 id="addTitle">Add a Question</h2>
@@ -53,12 +53,14 @@
             <label for="answerD">Answer D: </label>
             <input id="answerD" type="text" size="10">
             <input id="correctD" type="radio" name="correct" value="D">
-        <div class="bolide"></div>
+            <div class="bolide"></div>
     </section>
     <canvas id="canvas">Upgrade to Chrome or Firefox to use the Canvas API.</canvas>
     <script src="Bullet.js"></script>
     <script src="Asteroid.js"></script>
     <script src="bolides.js"></script>
+    <script src="menu.js"></script>
+    <script src="initiate.js"></script>
 
 </body>
 

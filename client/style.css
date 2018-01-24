@@ -3,11 +3,13 @@
     src: local('Arcade'), url(Arcade.ttf) format('truetype');
     unicode-range: U+0030—003A;
 }
+
 * {
     box-sizing: border-box;
     margin: 0;
     font: inherit;
 }
+
 body {
     width: 100vw;
     height: 100vh;
@@ -16,14 +18,17 @@ body {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
 }
+
 canvas {
     background-size: cover;
     display: none;
 }
+
 html,
 body {
     height: 100%;
 }
+
 body {
     color: white;
     overflow: hidden;
@@ -34,6 +39,7 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+
 body,
 #menu,
 nav {
@@ -44,14 +50,17 @@ nav {
     align-items: center;
     text-align: center;
 }
+
 a {
     color: inherit;
     text-decoration: none;
     border-bottom: solid 1px rgba(255, 255, 255, 0.3);
 }
+
 a:hover {
     border-bottom-color: white;
 }
+
 .bg {
     position: fixed;
     top: 0;
@@ -59,6 +68,7 @@ a:hover {
     width: 200vw;
     height: 100vh;
 }
+
 @keyframes pan {
     0% {
         left: 0;
@@ -69,42 +79,61 @@ a:hover {
         left: -100vw;
     }
 }
+
 .bg:first-child {
     background: url(images/bg-1.png);
     animation: 40s pan infinite linear;
 }
+
 .bg:nth-child(2) {
     background: url(images/bg-2.png);
     animation: 60s pan infinite linear;
 }
+
 .bg:nth-child(3) {
     background: url(images/bg-3.png);
     animation: 80s pan infinite linear;
 }
+
 h1 {
     text-align: center;
     font-weight: 100;
     font-size: 8em;
     margin-left: 10px;
 }
+
 button {
     display: block;
     border: 0;
     background: #333;
     color: white;
-    margin: 5px;
-    padding: 10px 0;
-    font-size: 2rem;
     cursor: pointer;
-    width: 600px;
-    height: 58px;
     border-left: solid 0 #e46b08;
     border-right: solid 0 transparent;
 }
+
 button:hover {
     border-left-width: 5px;
     border-right-width: 5px;
 }
+
+.menubutton {
+    margin: 5px;
+    padding: 10px 0;
+    font-size: 2rem;
+    width: 600px;
+    height: 58px;
+    display: block;
+}
+
+.backbutton {
+    margin-top: 10px;
+    padding: 5px 0;
+    font-size: 1rem;
+    width: 350px;
+    height: 40px;
+}
+
 .bolide {
     background: url(images/bolide.png);
     background-size: cover;
@@ -123,6 +152,7 @@ button:hover {
     z-index: -10;
     animation: bolide 30s infinite linear;
 }
+
 @keyframes bolide {
     0% {
         right: 100vw;
@@ -131,28 +161,35 @@ button:hover {
         right: -150vw;
     }
 }
+
 #instructions,
 #addQuestion
 /* TODO: other tabs style here */
- {
+
+{
     display: none;
-    font-size: 2em;
+    font-size: 1.5em;
     background: rgba(0, 0, 0, 0.4);
     padding: 50px 100px;
     cursor: pointer;
 }
-#login {
+
+#username {
     cursor: default;
+    display: none;
 }
+
 form {
     padding: 50px;
     width: 100%;
 }
+
 input {
     display: inline-block;
     color: white;
     transition: 0.2s all;
 }
+
 input[type='text'] {
     display: static;
     background: transparent;
@@ -160,10 +197,12 @@ input[type='text'] {
     font-size: 1em;
     width: 50%;
 }
+
 input:focus {
     outline: none;
     border-bottom-color: white;
 }
+
 input[type='submit'] {
     display: static;
     color: white;
@@ -171,11 +210,12 @@ input[type='submit'] {
     border: 1px solid darkgrey;
     border-radius: 5px;
 }
+
 input[type='submit']:hover {
     background-color: rgba(60, 60, 60, 1);
 }
+
 input[type='radio'] {
-  display: block;
-  background-color:
-  border: 2px #333 solid;
+    display: block;
+    background-color: border: 2px #333 solid;
 }

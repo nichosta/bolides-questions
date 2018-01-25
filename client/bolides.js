@@ -2,13 +2,12 @@
 /* globals Asteroid, Bullet*/
 'use strict';
 
-const connection = new WebSocket('ws://localhost:8675');
+const ws = new WebSocket('ws://localhost:8675');
 
 const canvas = {
     element: document.getElementById('canvas'),
     ctx: '',
     drawAngled: function(obj, img) {
-        console.log(`${obj.x}`);
         canvas.ctx.save();
         canvas.ctx.translate(obj.x + obj.width / 2, obj.y + obj.height / 2);
         canvas.ctx.rotate(obj.angle);
@@ -81,6 +80,36 @@ var bolides = {
         return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);
     },
 
+    // Creation of interval for slowing down spaceship
+    setSlowdown: function() {
+        return setInterval(() => {
+            if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.x -= 0.5;
+            } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.x += 0.5;
+            } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.x = 0;
+            }
+            if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.y -= 0.5;
+            } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.y += 0.5;
+            } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
+                bolides.spaceship.velocity.y = 0;
+            }
+        }, 500);
+    },
+    setBlink: function() {
+        return setInterval(function() {
+            if (!bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
+                bolides.spaceship.isBlinking = false;
+            } else if (!bolides.spaceship.isVulnerable && !bolides.spaceship.isBlinking) {
+                bolides.spaceship.isBlinking = true;
+            } else if (bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
+                bolides.spaceship.isBlinking = false;
+            }
+        }, 50);
+    },
     gameOver: function() {
         // Clear the screen
         bolides.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -245,11 +274,9 @@ var bolides = {
             // Bullet cooldown times
             if ((bullet.x <= -25 || bullet.x >= window.innerWidth) && !bullet.isCooling) {
                 bullet.isCooling = true;
-                setTimeout(() => {
-                    bullet.isBeingFired = false;
-                }, 1000);
+                setTimeout(() => bullet.isBeingFired = false, 1000);
             }
-            if ((bullet.y >= window.innerHeight || bullet.y <= 0) + 30 && !bullet.isCooling) {
+            if ((bullet.y >= window.innerHeight || bullet.y <= -30) && !bullet.isCooling) {
                 bullet.isCooling = true;
                 setTimeout(() => bullet.isBeingFired = false, 1000);
             }
@@ -270,7 +297,7 @@ var bolides = {
                 } else {
                     asteroid.x = window.innerWidth + 50;
                     asteroid.y = Math.random() * (window.innerHeight - 50) + 50;
-                    asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095; // See above
+                    asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095; // I don't even remember what these numbers were supposed to be
                 }
                 asteroid.isInMotion = true;
             }
@@ -291,9 +318,7 @@ var bolides = {
                 bolides.spaceship.x = window.innerWidth / 2 - 18;
                 bolides.spaceship.y = window.innerHeight / 2 - 31;
                 bolides.spaceship.isVulnerable = false;
-                setTimeout(function() {
-                    bolides.spaceship.isVulnerable = true;
-                }, 3000);
+                setTimeout(() => bolides.spaceship.isVulnerable = true, 3000);
             }
         });
         // Collision detection (bullets x asteroid)

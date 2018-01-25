@@ -3,17 +3,21 @@ const http = require('http');
 const WebSocket = require('websocket');
 
 var highScores;
-var questions;
+var questions = [];
+var answers = [];
 fs.readFile('./scores.json', 'utf8', (err, data) => {
     highScores = JSON.parse(data);
 });
 fs.readFile('./questions.json', 'utf8', (err, data) => {
-    questions = JSON.parse(data);
+    let temp = JSON.parse(data);
+    questions = Object.keys(temp);
+    answers = questions.map((key) => temp[key]);
 })
 
+
 function randomQuestion() {
-    let questionarr = Object.keys(questions);
-    return questions[questionarr[Math.floor(Math.random() * questionarr.length)]];
+    let rand = Math.floor(Math.random() * (questions.length));
+    global[questions[rand]] = answers[rand];
 }
 
 const httpServer = http.createServer((req, res) => {});
@@ -43,7 +47,7 @@ server.on('request', (req) => {
                 connection.sendUTF(randomQuestion());
                 break;
             case 'questionset':
-                questions[msg.utf8Data.data.ask] = msg.utf8Data.data.questionData;
+                console.log(msg.utf8Data);
         }
     })
 })

@@ -3,14 +3,15 @@ const menu = {
     nav: document.getElementsByTagName('nav')[0],
     instructions: document.getElementById('instructions'),
     username: document.getElementById('username'),
-    add: document.getElementById('addQuestion')
+    add: document.getElementById('addQuestion'),
+    questionText: document.getElementById('questionText'),
+    answerA: document.getElementById('answerA'),
+    answerB: document.getElementById('answerB'),
+    answerC: document.getElementById('answerC'),
+    answerD: document.getElementById('answerD'),
 };
 
-menuStart = function() {
-    menuListeners();
-};
-
-menuListeners = function() {
+function menuListeners() {
     document.getElementById('playButton').addEventListener('click', () => {
         initiate();
         menu.nav.style.display = 'none';
@@ -32,6 +33,22 @@ menuListeners = function() {
     document.getElementById('addBack').addEventListener('click', () => {
         menu.add.style.display = 'none';
         menu.nav.style.display = 'flex';
-    })
+    });
+    setQuestion();
 }
-addEventListener('load', menuStart);
+
+function setQuestion() {
+    document.getElementById('submitnew').addEventListener('click', () => {
+        if (ws.readyState = ws.OPEN) {
+            window[menu.questionText.value] = {
+                options: [answerA.value, answerB.value, answerC.value, answerD.value],
+                correct: document.querySelector('input[name="correct"]:checked').value
+            };
+            ws.send(JSON.stringify(window[menu.questionText.value]));
+            delete window[menu.questionText.value];
+        }
+    });
+}
+
+
+addEventListener('load', menuListeners);

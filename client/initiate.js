@@ -81,36 +81,15 @@ initiate = function() { // Get ready, long function coming up
         }
         // No special keyup listeners necessary.
     });
+
     // Set the spaceship slowdown interval (0.5 speed every half second)
-    // Again, this is staying the way it is, even though it's ugly.
-    bolides.intervals.slowdownInterval = setInterval(function() {
-        if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x -= 0.5;
-        } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x += 0.5;
-        } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x = 0;
-        }
-        if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y -= 0.5;
-        } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y += 0.5;
-        } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y = 0;
-        }
-    }, 500);
+    bolides.intervals.slowdownInterval = bolides.setSlowdown();
+
     // Set the control interval
     bolides.intervals.controlInterval = setInterval(bolides.control, 100);
+
     // Set the blinking interval
-    bolides.intervals.blinkInterval = setInterval(function() {
-        if (!bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
-            bolides.spaceship.isBlinking = false;
-        } else if (!bolides.spaceship.isVulnerable && !bolides.spaceship.isBlinking) {
-            bolides.spaceship.isBlinking = true;
-        } else if (bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
-            bolides.spaceship.isBlinking = false;
-        }
-    }, 50);
+    bolides.intervals.blinkInterval = bolides.setBlink();
 
     // Set the image sources
     bolides.images.ship.src = 'images/spaceship.png';

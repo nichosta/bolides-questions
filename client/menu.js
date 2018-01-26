@@ -40,15 +40,17 @@ function menuListeners() {
 function setQuestion() {
     document.getElementById('submitnew').addEventListener('click', () => {
         if (ws.readyState = ws.OPEN) {
-            window[menu.questionText.value] = {
-                options: [answerA.value, answerB.value, answerC.value, answerD.value],
-                correct: document.querySelector('input[name="correct"]:checked').value
-            };
-            ws.send(JSON.stringify(window[menu.questionText.value]));
-            delete window[menu.questionText.value];
+            ws.send(JSON.stringify({
+                type: 'questionset',
+                data: {
+                    text: menu.questionText.value,
+                    options: [answerA.value, answerB.value, answerC.value, answerD.value],
+                    correct: document.querySelector('input[name="correct"]:checked').value
+                }
+            }));
         }
-    });
-}
+    })
+};
 
 
 addEventListener('load', menuListeners);

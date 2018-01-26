@@ -2,7 +2,12 @@
 /* globals Asteroid, Bullet*/
 'use strict';
 
-const ws = new WebSocket('ws://localhost:8675');
+var ws = new WebSocket('ws://localhost:8675');
+
+ws.onmessage = (message) => {
+    let msg = message.data;
+    console.log(msg);
+};
 
 const canvas = {
     element: document.getElementById('canvas'),

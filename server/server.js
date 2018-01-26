@@ -4,20 +4,20 @@ const WebSocket = require('websocket');
 
 var highScores;
 var questions = [];
-var answers = [];
 fs.readFile('./scores.json', 'utf8', (err, data) => {
     highScores = JSON.parse(data);
 });
 fs.readFile('./questions.json', 'utf8', (err, data) => {
-    let temp = JSON.parse(data);
-    questions = Object.keys(temp);
-    answers = questions.map((key) => temp[key]);
+    try {
+        questions = JSON.parse(data).questions;
+    } catch (e) {
+        questions = [];
+    }
 })
 
 
 function randomQuestion() {
-    let rand = Math.floor(Math.random() * (questions.length));
-    global[questions[rand]] = answers[rand];
+    return questions[Math.round(Math.random() * question.length)];
 }
 
 const httpServer = http.createServer((req, res) => {});
@@ -28,26 +28,31 @@ var clients = [];
 const server = new WebSocket.server({
     httpServer: httpServer
 });
+console.log("Server status: ready");
 
 server.on('request', (req) => {
     const connection = req.accept(null, req.origin);
-    // TODO: EVERYTHING
     clients.push(connection);
-    connection.on('message', (msg) => {
-        console.log(msg.utf8Data);
-        switch (msg.utf8Data) {
+    connection.on('message', (message) => {
+        let msg = JSON.parse(message.utf8Data);
+        switch (msg.type) {
             case 'scoresget':
-                connection.send("functional");
+                connection.sendUTF(JSON.stringify({ type: "scores", data: highScores }));
                 break;
             case 'scoresset':
-                highScores = msg.utf8Data.data;
+                highScores = msg.data;
                 fs.writeFile('./scores.json', JSON.stringify(highScores), 'utf8', (err) => { console.error(err) });
                 break;
             case 'questionget':
-                connection.sendUTF(randomQuestion());
+                connection.sendUTF(JSON.stringify(randomQuestion()));
                 break;
             case 'questionset':
-                console.log(msg.utf8Data);
+                questions.push(msg.data);
+                fs.writeFile('./questions.json', JSON.stringify({ "questions": questions }), 'utf8', (err) => { console.error(err) });
+                break;
+            default:
+                connection.sendUTF("Invalid request");
+                break;
         }
     })
 })

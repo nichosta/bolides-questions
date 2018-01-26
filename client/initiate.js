@@ -83,13 +83,13 @@ initiate = function() { // Get ready, long function coming up
     });
 
     // Set the spaceship slowdown interval (0.5 speed every half second)
-    bolides.intervals.slowdownInterval = bolides.setSlowdown();
+    bolides.intervals.slowdownInterval = setInterval(bolides.slowdown, 500);
 
     // Set the control interval
     bolides.intervals.controlInterval = setInterval(bolides.control, 100);
 
     // Set the blinking interval
-    bolides.intervals.blinkInterval = bolides.setBlink();
+    bolides.intervals.blinkInterval = setInterval(bolides.blink, 50);
 
     // Set the image sources
     bolides.images.ship.src = 'images/spaceship.png';

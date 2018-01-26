@@ -80,35 +80,31 @@ var bolides = {
         return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);
     },
 
-    // Creation of interval for slowing down spaceship
-    setSlowdown: function() {
-        return setInterval(() => {
-            if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.x -= 0.5;
-            } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.x += 0.5;
-            } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.x = 0;
-            }
-            if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.y -= 0.5;
-            } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.y += 0.5;
-            } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
-                bolides.spaceship.velocity.y = 0;
-            }
-        }, 500);
+    // Function for slowing down spaceship
+    slowdown: function() {
+        if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.x -= 0.5;
+        } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.x += 0.5;
+        } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.x = 0;
+        }
+        if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.y -= 0.5;
+        } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.y += 0.5;
+        } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
+            bolides.spaceship.velocity.y = 0;
+        }
     },
-    setBlink: function() {
-        return setInterval(function() {
-            if (!bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
-                bolides.spaceship.isBlinking = false;
-            } else if (!bolides.spaceship.isVulnerable && !bolides.spaceship.isBlinking) {
-                bolides.spaceship.isBlinking = true;
-            } else if (bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
-                bolides.spaceship.isBlinking = false;
-            }
-        }, 50);
+    blink: function() {
+        if (!bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
+            bolides.spaceship.isBlinking = false;
+        } else if (!bolides.spaceship.isVulnerable && !bolides.spaceship.isBlinking) {
+            bolides.spaceship.isBlinking = true;
+        } else if (bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
+            bolides.spaceship.isBlinking = false;
+        }
     },
     gameOver: function() {
         // Clear the screen

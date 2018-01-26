@@ -34,7 +34,12 @@ server.on('request', (req) => {
     const connection = req.accept(null, req.origin);
     clients.push(connection);
     connection.on('message', (message) => {
-        let msg = JSON.parse(message.utf8Data);
+        let msg;
+        try {
+            msg = JSON.parse(message.utf8Data);
+        } catch (e) {
+            return;
+        }
         switch (msg.type) {
             case 'scoresget':
                 connection.sendUTF(JSON.stringify({ type: "scores", data: highScores }));
@@ -44,12 +49,15 @@ server.on('request', (req) => {
                 fs.writeFile('./scores.json', JSON.stringify(highScores), 'utf8', (err) => { console.error(err) });
                 break;
             case 'questionget':
-                connection.sendUTF(JSON.stringify(randomQuestion()));
+                connection.sendUTF(JSON.stringify({ type: 'questions', data: questions }));
                 break;
             case 'questionset':
                 questions.push(msg.data);
                 fs.writeFile('./questions.json', JSON.stringify({ "questions": questions }), 'utf8', (err) => { console.error(err) });
                 break;
+            case 'questiondelete':
+                questions = msg.data;
+                fs.writeFile('./questions.json', JSON.stringify({ "questions": questions }), 'utf8', (err) => { console.error(err) })
             default:
                 connection.sendUTF("Invalid request");
                 break;

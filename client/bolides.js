@@ -5,9 +5,22 @@
 var ws = new WebSocket('ws://localhost:8675');
 
 ws.onmessage = (message) => {
-    let msg = message.data;
-    console.log(msg);
+    let msg = JSON.parse(message.data);
+    switch (msg.type) {
+        case 'questions':
+            questions = msg.data;
+            break;
+        default:
+            alert('Invalid response');
+            break;
+    }
 };
+
+var questions;
+
+ws.onopen = () => {
+    ws.send(JSON.stringify({ type: 'questionget' }));
+}
 
 const canvas = {
     element: document.getElementById('canvas'),
@@ -20,6 +33,19 @@ const canvas = {
         canvas.ctx.restore();
     }
 };
+// I'll write circular collisions later, I guess.
+const collisions = {
+    // For now you just get square collisions
+    squareCollision: function(obj1, obj2) {
+        return (
+            obj1.x + obj1.width >= obj2.x &&
+            obj1.x <= obj2.x + obj2.width &&
+            obj1.y <= obj2.y + obj2.height &&
+            obj1.y + obj1.height >= obj2.y
+        );
+    }
+}
+
 // KeyPress object for storing keypresses
 var keyPresses = {
     up: false,
@@ -72,19 +98,17 @@ var bolides = {
         bullet: document.createElement('img'),
         bolide: document.createElement('img'),
     },
-    // Functions for determining collisions
-    // I know they're really ugly, but they're staying the way they are.
+    /*
+        // This function is for asteroid / bullet collisions
+        isTouchingBullet: function(bullet, asteroid) {
 
-    // This function is for asteroid / bullet collisions
-    isTouchingBullet: function(bullet, asteroid) {
-        return (
-            (Math.pow(Math.abs(bullet.x - (asteroid.x + 31)), 2)) + (Math.pow(Math.abs(bullet.y - (asteroid.y + 31)), 2)) <= 1100) && bullet.isBeingFired;
-    },
-    // This function is for asteroid / spaceship collisions
-    isTouchingSpaceship: function(spaceship, asteroid) {
-        return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);
-    },
+        },
+        // This function is for asteroid / spaceship collisions
+        isTouchingSpaceship: function(spaceship, asteroid) {
+            return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);
+        },
 
+        */
     // Function for slowing down spaceship
     slowdown: function() {
         if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
@@ -314,7 +338,7 @@ var bolides = {
         });
         // Collision detection (spaceship x asteroid)
         bolides.asteroidList.forEach((asteroid) => {
-            if (bolides.isTouchingSpaceship(bolides.spaceship, asteroid) && bolides.spaceship.isVulnerable) {
+            if (collisions.squareCollision(bolides.spaceship, asteroid) && bolides.spaceship.isVulnerable) {
                 bolides.spaceship.hearts -= 1;
                 bolides.spaceship.x = window.innerWidth / 2 - 18;
                 bolides.spaceship.y = window.innerHeight / 2 - 31;
@@ -325,7 +349,7 @@ var bolides = {
         // Collision detection (bullets x asteroid)
         bolides.bulletList.forEach((bullet) => {
             bolides.asteroidList.forEach((asteroid) => {
-                if (bolides.isTouchingBullet(bullet, asteroid)) {
+                if (collisions.squareCollision(bullet, asteroid) && bullet.isBeingFired) {
                     asteroid.isInMotion = false;
                     bullet.isBeingFired = false;
                     bolides.score += asteroid.isBolide ? 500 : 100;

@@ -9,6 +9,9 @@ const menu = {
     answerB: document.getElementById('answerB'),
     answerC: document.getElementById('answerC'),
     answerD: document.getElementById('answerD'),
+    remove: document.getElementById('removeQuestion'),
+    questions: document.getElementById('questionList'),
+    questionsArr: []
 };
 
 function menuListeners() {
@@ -34,6 +37,27 @@ function menuListeners() {
         menu.add.style.display = 'none';
         menu.nav.style.display = 'flex';
     });
+    document.getElementById('removeButton').addEventListener('click', () => {
+
+        for (let i = 0; i < questions.length; i++) {
+            menu.questionsArr.push(document.createElement('button'));
+            menu.questionsArr[i].addEventListener('click', () => {
+                delete menu.questionsArr[i];
+                questions.splice(i, 1);
+                ws.send(JSON.stringify({ type: 'questiondelete', data: questions }));
+            });
+            menu.questionsArr[i].innerHTML = questions[i].text;
+            menu.questions.appendChild(menu.questionsArr[i]);
+        }
+        menu.nav.style.display = 'none';
+        menu.remove.style.display = 'flex';
+    });
+    document.getElementById('removeBack').addEventListener('click', () => {
+        menu.questions.innerHTML = '';
+        menu.questionsArr = [];
+        menu.remove.style.display = 'none';
+        menu.remove.style.display = 'flex';
+    })
     setQuestion();
 }
 

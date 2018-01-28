@@ -2,7 +2,6 @@ const menu = {
     container: document.getElementById('menu'),
     nav: document.getElementsByTagName('nav')[0],
     instructions: document.getElementById('instructions'),
-    username: document.getElementById('username'),
     add: document.getElementById('addQuestion'),
     questionText: document.getElementById('questionText'),
     answerA: document.getElementById('answerA'),
@@ -42,11 +41,12 @@ function menuListeners() {
         for (let i = 0; i < questions.length; i++) {
             menu.questionsArr.push(document.createElement('button'));
             menu.questionsArr[i].addEventListener('click', () => {
-                delete menu.questionsArr[i];
-                questions.splice(i, 1);
+                menu.questionsArr[i].parentNode.removeChild(menu.questionsArr[i]);
+                questions.splice(questions.indexOf(menu.questionsArr[i]), 1);
                 ws.send(JSON.stringify({ type: 'questiondelete', data: questions }));
             });
             menu.questionsArr[i].innerHTML = questions[i].text;
+            menu.questionsArr[i].setAttribute('class', 'questionButton');
             menu.questions.appendChild(menu.questionsArr[i]);
         }
         menu.nav.style.display = 'none';
@@ -56,7 +56,7 @@ function menuListeners() {
         menu.questions.innerHTML = '';
         menu.questionsArr = [];
         menu.remove.style.display = 'none';
-        menu.remove.style.display = 'flex';
+        menu.nav.style.display = 'flex';
     })
     setQuestion();
 }

@@ -99,10 +99,6 @@ var bolides = {
         bolide: document.createElement('img'),
     },
     /*
-        // This function is for asteroid / bullet collisions
-        isTouchingBullet: function(bullet, asteroid) {
-
-        },
         // This function is for asteroid / spaceship collisions
         isTouchingSpaceship: function(spaceship, asteroid) {
             return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);

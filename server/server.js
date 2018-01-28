@@ -41,13 +41,6 @@ server.on('request', (req) => {
             return;
         }
         switch (msg.type) {
-            case 'scoresget':
-                connection.sendUTF(JSON.stringify({ type: "scores", data: highScores }));
-                break;
-            case 'scoresset':
-                highScores = msg.data;
-                fs.writeFile('./scores.json', JSON.stringify(highScores), 'utf8', (err) => { console.error(err) });
-                break;
             case 'questionget':
                 connection.sendUTF(JSON.stringify({ type: 'questions', data: questions }));
                 break;

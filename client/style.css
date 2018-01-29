@@ -195,7 +195,8 @@ h3 {
 }
 
 #addQuestion,
-#removeQuestion {
+#removeQuestion,
+#questionPrompt {
     display: none;
     font-size: 1.5em;
     background: rgba(0, 0, 0, .6);
@@ -211,6 +212,11 @@ h3 {
 label[for='questionText'] {
     margin-left: 50px;
     margin-bottom: 10px;
+}
+
+.answerButton {
+    font-size: 1em;
+    padding: 20px;
 }
 
 .radioLabel {

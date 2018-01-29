@@ -151,16 +151,17 @@ var bolides = {
                 window.location = window.location;
             }
         });
-        // Yes I did just do that
         // Draw in the final level and score
         bolides.ctx.fillStyle = 'white';
         bolides.ctx.fillText('Score: ' + bolides.score, window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 + 90);
         bolides.ctx.fillText('Level: ' + bolides.level, window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 + 150);
+
         // Remove all the intervals from the game
         // I'm not sure this actually matters, I just wanted to be thorough.
         clearInterval(bolides.intervals.slowdownInterval);
         clearInterval(bolides.intervals.controlInterval);
         clearInterval(bolides.intervals.blinkInterval);
+
         // Reruns the program every time the window gets resized
         // This makes sure the whole thing looks nice all the time
         addEventListener('resize', bolides.gameOver);
@@ -173,15 +174,58 @@ var bolides = {
         if (bolides.paused) {
             bolides.paused = false;
             bolides.intervals.controlInterval = setInterval(bolides.control, 100);
-            bolides.loop();
+            bolides.intervals.slowdownInterval = setInterval(bolides.slowdown, 500);
+            requestAnimationFrame(bolides.loop);
             // Pausing
         } else if (!bolides.paused) {
             bolides.paused = true;
             // I get rid of the control interval so you can't move while it's paused
             clearInterval(bolides.intervals.controlInterval);
+            clearInterval(bolides.intervals.slowdownInterval);
         }
     },
 
+    // Question ask function
+    promptQuestion: function() {
+        canvas.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        bolides.pause();
+        let question = questions[Math.floor(Math.random() * questions.length)];
+        menu.questionPrompt.style.display = 'flex';
+        canvas.element.style.display = 'none';
+        document.getElementById('questionAsk').innerHTML = question.text;
+        for (let i = 0; i <= 3; i++) {
+            menu.questionPrompt.getElementsByTagName('button')[i].innerHTML = question.options[i];
+            menu.questionPrompt.getElementsByTagName('button')[i].addEventListener('click', bolides.answerListeners(i == question.correct));
+        }
+    },
+
+    answerListeners: function(bewl) {
+        if (bewl) return () => {
+            alert('correct!');
+            bolides.pause();
+            for (let j = 0; j <= 3; j++) menu.questionPrompt.getElementsByTagName('button')[0].parentNode.removeChild(menu.questionPrompt.getElementsByTagName('button')[0]);
+            for (let h = 0; h <= 3; h++) {
+                let ele = document.createElement('button');
+                ele.setAttribute('class', 'answerButton');
+                menu.questionPrompt.appendChild(ele);
+            }
+            menu.questionPrompt.style.display = 'none';
+            canvas.element.style.display = 'block';
+        }
+        return () => {
+            alert('incorrect!');
+            bolides.spaceship.hearts--;
+            bolides.pause();
+            for (let j = 0; j <= 3; j++) menu.questionPrompt.getElementsByTagName('button')[0].parentNode.removeChild(menu.questionPrompt.getElementsByTagName('button')[0]);
+            for (let h = 0; h <= 3; h++) {
+                let ele = document.createElement('button');
+                ele.setAttribute('class', 'answerButton');
+                menu.questionPrompt.appendChild(ele);
+            }
+            menu.questionPrompt.style.display = 'none';
+            canvas.element.style.display = 'block';
+        }
+    },
     // Loop
     loop: function() {
         // Is the player out of health?
@@ -335,7 +379,7 @@ var bolides = {
         // Collision detection (spaceship x asteroid)
         bolides.asteroidList.forEach((asteroid) => {
             if (collisions.squareCollision(bolides.spaceship, asteroid) && bolides.spaceship.isVulnerable) {
-                bolides.spaceship.hearts -= 1;
+                bolides.promptQuestion();
                 bolides.spaceship.x = window.innerWidth / 2 - 18;
                 bolides.spaceship.y = window.innerHeight / 2 - 31;
                 bolides.spaceship.isVulnerable = false;

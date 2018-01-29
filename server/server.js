@@ -2,11 +2,7 @@ const fs = require('fs');
 const http = require('http');
 const WebSocket = require('websocket');
 
-var highScores;
 var questions = [];
-fs.readFile('./scores.json', 'utf8', (err, data) => {
-    highScores = JSON.parse(data);
-});
 fs.readFile('./questions.json', 'utf8', (err, data) => {
     try {
         questions = JSON.parse(data).questions;
@@ -14,11 +10,6 @@ fs.readFile('./questions.json', 'utf8', (err, data) => {
         questions = [];
     }
 })
-
-
-function randomQuestion() {
-    return questions[Math.round(Math.random() * question.length)];
-}
 
 const httpServer = http.createServer((req, res) => {});
 httpServer.listen(8675);

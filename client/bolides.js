@@ -1,12 +1,25 @@
+/* 
+    This is the primary game (and menu) program file.
+    It's a bit cluttered, but almost all of the control flow is here somewhere.
+*/
+
+// Details for debugging
 /* jshint esversion: 6, loopfunc: true, unused: false, strict: true, debug: true, globalstrict: true, moz: true, browser: true, devel: true, undef: true */
 /* globals Asteroid, Bullet*/
 'use strict';
 
+// Open the websocket (send the connection request to the server)
+// This won't work on older browsers.
 var ws = new WebSocket('ws://localhost:8675');
 
+// Offline storage of questions (gotten on program load)
+var questions;
+
+// Function for recieving messages from the server
 ws.onmessage = (message) => {
     let msg = JSON.parse(message.data);
     switch (msg.type) {
+        // Handle receiving the questions
         case 'questions':
             questions = msg.data;
             break;
@@ -16,15 +29,16 @@ ws.onmessage = (message) => {
     }
 };
 
-var questions;
-
+// Requests questions from the server when the websocket opens
 ws.onopen = () => {
     ws.send(JSON.stringify({ type: 'questionget' }));
 }
 
+// Canvas values are determined during running of initiate() (see initiate.js)
 const canvas = {
-    element: document.getElementById('canvas'),
-    ctx: '',
+    element: undefined,
+    ctx: undefined,
+    // This function handles drawing things on the canvas that have an angle attached
     drawAngled: function(obj, img) {
         canvas.ctx.save();
         canvas.ctx.translate(obj.x + obj.width / 2, obj.y + obj.height / 2);
@@ -33,9 +47,9 @@ const canvas = {
         canvas.ctx.restore();
     }
 };
-// I'll write circular collisions later, I guess.
+
 const collisions = {
-    // For now you just get square collisions
+    // Collisions between two simulated rectangular objects
     squareCollision: function(obj1, obj2) {
         return (
             obj1.x + obj1.width >= obj2.x &&
@@ -46,7 +60,7 @@ const collisions = {
     }
 }
 
-// KeyPress object for storing keypresses
+// KeyPress object for storing keypresses (see initiate.js for associated key handlers)
 var keyPresses = {
     up: false,
     down: false,
@@ -56,41 +70,48 @@ var keyPresses = {
 
 // Game object
 var bolides = {
-    // Self explanatory
+
     level: 1,
     score: 0,
+
     // Pause variable
     paused: false,
 
-    // Interval object to store interval ids
+    // Interval object to store interval ids so they can be cleared
     intervals: {
         slowdownInterval: 0,
         controlInterval: 0,
-        // Whatever you do, don't blink. Blink and you're dead.
         blinkInterval: 0
     },
-    // Attributes of the player's ship declared
+
+    // Attributes of the player's ship
     spaceship: {
-        // Starting x and y
-        x: 390,
-        y: 290,
+        // Starting x and y (arbitrary)
+        x: 400,
+        y: 300,
+
         // Starting angle
         angle: 0,
+
         // Starting velocity
         velocity: {
             x: 0,
             y: 0
         },
+
         // Constant width and height
         width: 32,
         height: 74,
+
         // Starting health
         hearts: 3,
+
         // Invincibilty and blink variables
         isVulnerable: true,
         isBlinking: false
     },
-    // Images used by the project are created here
+
+    // Image elements used by the project are created here
     images: {
         ship: document.createElement('img'),
         asteroid: document.createElement('img'),
@@ -98,30 +119,27 @@ var bolides = {
         bullet: document.createElement('img'),
         bolide: document.createElement('img'),
     },
-    /*
-        // This function is for asteroid / spaceship collisions
-        isTouchingSpaceship: function(spaceship, asteroid) {
-            return (Math.pow(Math.abs(spaceship.x + 18 - (asteroid.x + 31)), 2) + Math.pow(Math.abs(spaceship.y + 31 - (asteroid.y + 31)), 2) <= 1300);
-        },
 
-        */
     // Function for slowing down spaceship
     slowdown: function() {
-        if (bolides.spaceship.velocity.x > 0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x -= 0.5;
-        } else if (bolides.spaceship.velocity.x <= -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x += 0.5;
-        } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.x = 0;
-        }
-        if (bolides.spaceship.velocity.y > 0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y -= 0.5;
-        } else if (bolides.spaceship.velocity.y <= -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y += 0.5;
-        } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5 && !keyPresses.up) {
-            bolides.spaceship.velocity.y = 0;
+        if (!keyPresses.up) {
+           if (bolides.spaceship.velocity.x > 0.5) {
+               bolides.spaceship.velocity.x -= 0.5;
+           } else if (bolides.spaceship.velocity.x <= -0.5) {
+               bolides.spaceship.velocity.x += 0.5;
+           } else if (bolides.spaceship.velocity.x < 0.5 && bolides.spaceship.velocity.x > -0.5) {
+               bolides.spaceship.velocity.x = 0;
+           }
+           if (bolides.spaceship.velocity.y > 0.5) {
+              bolides.spaceship.velocity.y -= 0.5;
+          } else if (bolides.spaceship.velocity.y <= -0.5) {
+              bolides.spaceship.velocity.y += 0.5;
+          } else if (bolides.spaceship.velocity.y < 0.5 && bolides.spaceship.velocity.y > -0.5) {
+              bolides.spaceship.velocity.y = 0;
+          }
         }
     },
+    // Function handling spaceship visibility
     blink: function() {
         if (!bolides.spaceship.isVulnerable && bolides.spaceship.isBlinking) {
             bolides.spaceship.isBlinking = false;
@@ -131,6 +149,8 @@ var bolides = {
             bolides.spaceship.isBlinking = false;
         }
     },
+
+    // Function handling the end of the game
     gameOver: function() {
         // Clear the screen
         bolides.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -139,6 +159,7 @@ var bolides = {
         bolides.ctx.fillStyle = 'white';
         // Draw the game over s
         bolides.ctx.fillText('Game Over', window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 - 50);
+
         // All this code was done on an 11-inch Macbook, so it probably looks awful on other computers.
         // Oh well.
         bolides.ctx.fillRect(window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 - 26, 420, 60);
@@ -147,10 +168,11 @@ var bolides = {
         bolides.ctx.fillText('Restart', window.innerWidth / 2 - window.innerWidth / 6 + 30, window.innerHeight / 2 + 25);
         addEventListener('click', function(e) {
             if (((window.innerWidth / 2 - window.innerWidth / 6 < e.clientX) && (e.clientX < window.innerWidth / 2 - window.innerWidth / 6 + 420)) && ((window.innerHeight / 2 - 26 < e.clientY) && (e.clientY < window.innerHeight / 2 + 34))) {
-                // Basically reloads the page
+                // Functionally reloads the page
                 window.location = window.location;
             }
         });
+
         // Draw in the final level and score
         bolides.ctx.fillStyle = 'white';
         bolides.ctx.fillText('Score: ' + bolides.score, window.innerWidth / 2 - window.innerWidth / 6, window.innerHeight / 2 + 90);
@@ -179,7 +201,7 @@ var bolides = {
             // Pausing
         } else if (!bolides.paused) {
             bolides.paused = true;
-            // I get rid of the control interval so you can't move while it's paused
+            // Gets rid of the control interval so you can't move while it's paused
             clearInterval(bolides.intervals.controlInterval);
             clearInterval(bolides.intervals.slowdownInterval);
         }
@@ -226,15 +248,15 @@ var bolides = {
             canvas.element.style.display = 'block';
         }
     },
+
     // Loop
     loop: function() {
         // Is the player out of health?
         if (bolides.spaceship.hearts <= 0) {
-            // Then display 'Game over'
             bolides.gameOver();
         } else {
             // No? Then move and draw everything, then loop again.
-            // PS: also resize the canvas, just in case
+            // Also resizes canvas
             canvas.element.width = window.innerWidth - 4;
             canvas.element.height = window.innerHeight - 4;
             bolides.move();
@@ -248,7 +270,6 @@ var bolides = {
     control: function() {
         // Up key or W key?
         // Does several formulas to make sure you can speed up (there's a max speed)
-        // This is real ugly
         if (keyPresses.up) {
             if (bolides.spaceship.velocity.x > 10) {
                 if (Math.sin(bolides.spaceship.angle) < 0) {
@@ -347,10 +368,7 @@ var bolides = {
             }
         });
         // Asteroid movement math
-        // Dynamic number of asteroids => Use forEach on asteroid list
-        // Fun fact: At least 5 times while coding this, I encountered a bug due to typing 'asteroid' as 'asteriod'
-        // Also 'bolides' as 'boldies' or 'boildes'
-        // Anyway, a good chunk of this math is exactly the same as what the spaceship has.
+        // A good chunk of this math is exactly the same as what the spaceship has.
         bolides.asteroidList.forEach((asteroid) => {
             // Choose where the asteroid comes from, its angle, and whether or not it's a bolide.
             if (!asteroid.isInMotion) {
@@ -358,11 +376,11 @@ var bolides = {
                 if (Math.random() < 0.5) {
                     asteroid.x = (Math.random() * (window.innerWidth + 100) + 50);
                     asteroid.y = -50;
-                    asteroid.angle = Math.random() * 2.9670597283903604 + 1.6580627893946132; // Radians or something
+                    asteroid.angle = Math.random() * 2.9670597283903604 + 1.6580627893946132; // Radians
                 } else {
                     asteroid.x = window.innerWidth + 50;
                     asteroid.y = Math.random() * (window.innerHeight - 50) + 50;
-                    asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095; // I don't even remember what these numbers were supposed to be
+                    asteroid.angle = Math.random() * 2.9670597283903604 + 3.2288591161895095;
                 }
                 asteroid.isInMotion = true;
             }

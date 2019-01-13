@@ -1,48 +1,57 @@
-createObjects = function() {
+/* 
+    This file contains all the functions that start up the game.
+    They are kept apart to ensure readability and to clear up clutter in the main program file.
+*/
+
+function createObjects() {
     // Making all the bullets used in the program
     bolides.bulletList = [new Bullet(bolides.spaceship), new Bullet(bolides.spaceship), new Bullet(bolides.spaceship)];
+
     // New asteroids are dynamically generated as the game progresses; that's why there's only one to begin with
     bolides.asteroidList = [new Asteroid()];
 }
 
-initiate = function() { // Get ready, long function coming up
-    // Declare the canvas's context as 2D
+// Long function used to initialize the majority of the game (run after leaving the starting menu)
+function initiate() {
+
+    // Reference canvas element and get its 2d context
     canvas.element = document.getElementById('canvas');
     canvas.ctx = canvas.element.getContext('2d');
+
     // Show the canvas and hide the menu
     canvas.element.style.display = 'block';
     menu.container.style.display = 'none';
 
-    // Set the canvas's size
+    // Set the canvas's size based on the browser window's size
     canvas.element.width = window.innerWidth - 4;
     canvas.element.height = window.innerHeight - 4;
 
-    // Create assets
+    // Create assets (see above)
     createObjects();
 
-    // Keydown listeners
+    // Keydown listeners for program control
     addEventListener('keydown', function(e) {
         switch (e.keyCode) {
             // First case in each statement is for WASD key, second is arrow key
-            case 87:
-            case 38:
+            case 87: // W
+            case 38: // Up arrow
                 keyPresses.up = true;
                 break;
-            case 65:
-            case 37:
+            case 65: // A
+            case 37: // Left Arrow
                 keyPresses.left = true;
                 break;
-            case 83:
-            case 40:
+            case 83: // S
+            case 40: // Down Arrow
                 keyPresses.down = true;
                 break;
-            case 68:
-            case 39:
+            case 68: // D
+            case 39: // Right Arrow
                 keyPresses.right = true;
                 break;
-                // Space has a special listener because otherwise short presses have no effect
-                // Checks for fireability from each bullet
             case 32:
+            // Space has a special listener so that only down presses are registered, and only once
+            // Fires the first bullet available and breaks
                 for (let i = 0; i < bolides.bulletList.length; i++) {
                     if (!bolides.bulletList[i].isBeingFired) {
                         bolides.bulletList[i].fire();
@@ -58,10 +67,9 @@ initiate = function() { // Get ready, long function coming up
         }
     });
 
-    // Keyup listeners
+    // Keyup listeners (same values as above)
     addEventListener('keyup', function(e) {
         switch (e.keyCode) {
-            // First case in each statement is for WASD key, second is arrow key
             case 87:
             case 38:
                 keyPresses.up = false;
@@ -85,23 +93,18 @@ initiate = function() { // Get ready, long function coming up
     // Set the spaceship slowdown interval (0.5 speed every half second)
     bolides.intervals.slowdownInterval = setInterval(bolides.slowdown, 500);
 
-    // Set the control interval
+    // Set the control interval (check keys being held every tenth of a second)
     bolides.intervals.controlInterval = setInterval(bolides.control, 100);
 
-    // Set the blinking interval
+    // Set the blinking interval (change ship's visibility every twentieth of a second)
     bolides.intervals.blinkInterval = setInterval(bolides.blink, 50);
 
-    // Set the image sources
+    // Set the base image sources (see 'images' folder)
     bolides.images.ship.src = 'images/spaceship.png';
     bolides.images.asteroid.src = 'images/asteroid.png';
     bolides.images.heart.src = 'images/heart.png';
     bolides.images.bullet.src = 'images/bullet.png';
     bolides.images.bolide.src = 'images/bolide.png';
-
-    //Set vital attributes again, just in case
-    bolides.spaceship.hearts = 3;
-    bolides.spaceship.velocity.x = 0;
-    bolides.spaceship.velocity.y = 0;
 
     // Start looping
     bolides.loop();
